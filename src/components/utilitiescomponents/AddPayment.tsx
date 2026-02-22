@@ -1,8 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useGetProperties } from "@/hooks/useGetProperties";
 import axios from "@/lib/axios";
-import { useStore } from "@tanstack/react-form";
-import { useForm } from "@tanstack/react-form";
 import Dropdown from "../ui/dropdown";
 import { Field, FieldLabel } from "../ui/field";
 import TenantsDropdown from "../propertiesComponets/TenantsDropdown";
@@ -15,8 +13,8 @@ import { toast } from "sonner";
 import { randomId } from "@mantine/hooks";
 import { MonthPicker } from "../ui/month-picker";
 
-export default function AddPayment(){
-    const {properties} = useGetProperties()
+export default function AddPayment() {
+    const { properties } = useGetProperties()
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [property, setProperty] = useState(null);
@@ -25,80 +23,80 @@ export default function AddPayment(){
     const [payment_method, setPaymentMethod] = useState('')
     const [month, setMonth] = useState('')
 
-    const propItems = properties && properties.data.map((prop)=> {
-        return {name:prop.name, id:prop.id}
+    const propItems = properties && properties.data.map((prop) => {
+        return { name: prop.name, id: prop.id }
     })
 
-    const {data:tenants, isLoading} = useQuery({
-        queryKey: ['PROPERTY_TENANTS', {id:property ? property.id : null}],
-        queryFn: async()=> {
-            const {data} = await axios.get(`/api/property/tenants/${property ? property.id : null}`)
+    const { data: tenants, isLoading } = useQuery({
+        queryKey: ['PROPERTY_TENANTS', { id: property ? property.id : null }],
+        queryFn: async () => {
+            const { data } = await axios.get(`/api/property/tenants/${property ? property.id : null}`)
             return data;
         },
-        enabled:!!property
+        enabled: !!property
     })
 
-    useEffect(()=> {
-        if(tenancy){
-            const items = tenancy.costs.map((cost)=> {
+    useEffect(() => {
+        if (tenancy) {
+            const items = tenancy.costs.map((cost) => {
                 return {
-                    cost:cost.cost,
-                    id:cost.id,
-                    title:cost.title,
-                    property_id:cost.property_id,
-                    amount_paid:'',
-                    description:'',
-                    reference_code:'',
+                    cost: cost.cost,
+                    id: cost.id,
+                    title: cost.title,
+                    property_id: cost.property_id,
+                    amount_paid: '',
+                    description: '',
+                    reference_code: '',
                 }
             })
             const rent = {
-                id:randomId(),
-                cost:tenancy.rent,
-                title:'rent',
-                property_id:property.id || null,
-                amount_paid:'',
-                description:'',
-                reference_code:'',
+                id: randomId(),
+                cost: tenancy.rent,
+                title: 'rent',
+                property_id: property.id || null,
+                amount_paid: '',
+                description: '',
+                reference_code: '',
             }
             const allCosts = [rent, ...items]
             setCosts(allCosts);
         }
-    },[tenancy])
+    }, [tenancy])
 
-    function updateCost(id,field,value) {
+    function updateCost(id, field, value) {
         setCosts((prev) =>
             prev.map((item) =>
-            item.id === id
-                ? {
-                    ...item,
-                    [field]: value,
-                }
-                : item
+                item.id === id
+                    ? {
+                        ...item,
+                        [field]: value,
+                    }
+                    : item
             )
         );
     }
 
-    const handleAddPayment = async()=> {
+    const handleAddPayment = async () => {
         setLoading(true);
         const params = {
-            property_id:property.id,
-            user_id:tenancy.user_id,
-            tenancy_id:tenancy.id,
+            property_id: property.id,
+            user_id: tenancy.user_id,
+            tenancy_id: tenancy.id,
             payment_method,
-            date:month,
+            date: month,
             costs,
         }
         const url = `/api/payment`
-        const {data,error} = await apiRequest(()=> 
+        const { data, error } = await apiRequest(() =>
             axios.post(url, params)
-        ) 
-        console.log(data,error);     
-        if(error){
+        )
+        console.log(data, error);
+        if (error) {
             setLoading(false)
             setError(error)
             console.log(error)
         }
-        if(data){
+        if (data) {
             setLoading(false);
             setProperty(null)
             setTenancy(null)
@@ -106,10 +104,10 @@ export default function AddPayment(){
             setPaymentMethod(null)
             setMonth(null)
             //!isEditMode && form.reset()
-            toast(data.message,{position:'top-center'})
+            toast(data.message, { position: 'top-center' })
         }
     }
-    return(
+    return (
         <>
             <form >
                 <Field>
@@ -118,7 +116,7 @@ export default function AddPayment(){
                         items={propItems}
                         placeholder="Select Property"
                         value={property ? property.name : ''}
-                        handleChange={(item)=>  setProperty(item)}
+                        handleChange={(item) => setProperty(item)}
                     />
                 </Field>
                 <br />
@@ -129,23 +127,23 @@ export default function AddPayment(){
                             items={tenants}
                             placeholder="Select Tenants"
                             value={tenancy ? tenancy.name : ''}
-                            handleChange={(item)=> setTenancy(item)}
+                            handleChange={(item) => setTenancy(item)}
                         />
-                    </Field> 
+                    </Field>
                 )}
-                
+
                 <div>
                     <label>Payment Method</label>
-                    <Input type="text" value={payment_method} onChange={(e)=> setPaymentMethod(e.target.value)} />
+                    <Input type="text" value={payment_method} onChange={(e) => setPaymentMethod(e.target.value)} />
                 </div>
                 <div className="py-2">
                     <label>Select Payment Month</label>
-                    <MonthPicker value={month} onChange={(value)=> setMonth(value)} />
+                    <MonthPicker value={month} onChange={(value) => setMonth(value)} />
                 </div>
                 <br />
                 {costs && (
                     <div className="gird grid-cols-1 gap-2">
-                        {costs.map((cost)=> (
+                        {costs.map((cost) => (
                             <div key={cost.id} className="border-b py-2">
                                 <h6 className="uppercase">{cost.title}</h6>
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-6 py-4">
@@ -155,24 +153,24 @@ export default function AddPayment(){
                                     </div>
                                     <div className="col-span-full sm:col-span-3">
                                         <label>Amount Paid</label>
-                                        <Input 
-                                            type="number" 
+                                        <Input
+                                            type="number"
                                             value={cost.amount_paid}
-                                            onChange={(e)=>updateCost(cost.id, 'amount_paid', e.target.valueAsNumber) }
+                                            onChange={(e) => updateCost(cost.id, 'amount_paid', e.target.valueAsNumber)}
                                         />
                                     </div>
                                 </div>
                                 <div>
                                     <label>Reference Code</label>
-                                    <Input 
-                                        type="text" 
+                                    <Input
+                                        type="text"
                                         value={cost.reference_code}
-                                        onChange={(e)=>updateCost(cost.id, 'reference_code', e.target.value) }
+                                        onChange={(e) => updateCost(cost.id, 'reference_code', e.target.value)}
                                     />
-                                </div> 
+                                </div>
                                 <div>
                                     <label>Description</label>
-                                    <Textarea value={cost.description} onChange={(e)=> updateCost(cost.id, 'description', e.target.value)} />
+                                    <Textarea value={cost.description} onChange={(e) => updateCost(cost.id, 'description', e.target.value)} />
                                 </div>
                             </div>
                         ))}
@@ -180,7 +178,7 @@ export default function AddPayment(){
                 )}
                 <br />
                 <Submitbtn text="Add Payment" type="button" btnfn={handleAddPayment} fullwidth={true} loading={loading} />
-            </form> 
+            </form>
         </>
     )
 }

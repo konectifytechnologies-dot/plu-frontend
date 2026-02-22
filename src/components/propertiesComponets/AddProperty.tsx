@@ -1,11 +1,11 @@
 import type { Property } from "./types/PropertyTypes"
-import { FieldGroup, FieldError, FieldTitle, FieldDescription, FieldContent, FieldLabel, Field, FieldSet, FieldLegend } from "../ui/field"
+import { FieldGroup, FieldError, FieldLabel, Field } from "../ui/field"
 import { Input } from "../ui/input"
 import { useForm } from "@tanstack/react-form"
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
+    InputGroup,
+    InputGroupAddon,
+    InputGroupInput,
 } from "@/components/ui/input-group"
 import { cn } from "@/lib/utils"
 import { ImageSelect } from "../ui/image-select"
@@ -23,77 +23,77 @@ import { useSearch } from "@tanstack/react-router"
 import { Checkbox } from "../ui/checkbox"
 
 interface PropertyProps {
-    initialData:Property | null
+    initialData: Property | null
 }
 type ItemType = {
-    name:string | null,
-    id:string | null
+    name: string | null,
+    id: string | null
 }
-export default function AddProperty(){
-  const queryClient = useQueryClient();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const {property_id} = useSearch({strict:false});
-  const id  = property_id === undefined || property_id === null ? null : property_id;
-  const btntext = id ? 'Save Changes' : 'Add Property';
+export default function AddProperty() {
+    const queryClient = useQueryClient();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const { property_id } = useSearch({ strict: false });
+    const id = property_id === undefined || property_id === null ? null : property_id;
+    const btntext = id ? 'Save Changes' : 'Add Property';
 
-  const {data:landlords, isLoading} = useQuery({
-        queryKey:['AGENT_LANDLORDS'],
-        queryFn:async()=> {
-            const {data} = await axios.get('/api/landlords');
+    const { data: landlords, isLoading } = useQuery({
+        queryKey: ['AGENT_LANDLORDS'],
+        queryFn: async () => {
+            const { data } = await axios.get('/api/landlords');
             return data;
         }
-  });
+    });
 
-  const {data:property} = useQuery({
-    queryKey:['PROPERTY', {id}],
-    queryFn: async()=> {
-        const {data} = await axios.get(`/api/property/${id}`);
-        return data;
-    },
-    enabled:!!id
-  }) 
+    const { data: property } = useQuery({
+        queryKey: ['PROPERTY', { id }],
+        queryFn: async () => {
+            const { data } = await axios.get(`/api/property/${id}`);
+            return data;
+        },
+        enabled: !!id
+    })
 
-  const items = landlords && landlords.data.map((item)=> {
-    return {name:item.name , id:item.id}
-  })
-  const propertyTypes = [
-    {
-      id: 1,
-      title: "residential",
-    },
-    {
-      id: 2,
-      title: "commercial",
-    },
-    {
-      id: 3,
-      title: "industrial",
-    },
-  ];
+    const items = landlords && landlords.data.map((item) => {
+        return { name: item.name, id: item.id }
+    })
+    const propertyTypes = [
+        {
+            id: 1,
+            title: "residential",
+        },
+        {
+            id: 2,
+            title: "commercial",
+        },
+        {
+            id: 3,
+            title: "industrial",
+        },
+    ];
 
     const form = useForm({
-        defaultValues:{
-            picture:'',
+        defaultValues: {
+            picture: '',
             name: '',
             units: null,
             location: '',
             landlord_id: '',
             landlord: '',
             water_cost: null,
-            rent_due_date:null,
-            deposit_required:true,
-            property_type:'residential'
+            rent_due_date: null,
+            deposit_required: true,
+            property_type: 'residential'
         },
-        
-        onSubmit:async({value})=> {
+
+        onSubmit: async ({ value }) => {
             await handleAddProperty(value)
-           
+
         }
     })
 
-    useEffect(()=> {
-        if(id && property){
+    useEffect(() => {
+        if (id && property) {
             form.reset({
                 picture: property.picture,
                 name: property.name,
@@ -102,204 +102,205 @@ export default function AddProperty(){
                 landlord_id: property.landlord_id,
                 landlord: property.landlord,
                 water_cost: property.water_cost,
-                rent_due_date:property.rent_due_date,
-                deposit_required:property.deposit_required,
+                rent_due_date: property.rent_due_date,
+                deposit_required: property.deposit_required,
                 property_type: property.property_type,
             })
         }
-    },[id, property])
+    }, [id, property])
 
-    console.log(property)
-    const handleAddProperty = async(value)=> {
+
+    const handleAddProperty = async (value) => {
         setLoading(true);
-        const url =  id ? `/api/property/${id}` : '/api/property';
+        const url = id ? `/api/property/${id}` : '/api/property';
         const method = id ? 'patch' : 'post'
-        const {data,error} = await apiRequest(()=> 
+        const { data, error } = await apiRequest(() =>
             axios[method](url, value)
-        )  
-        if(error){
+        )
+        console.log(data, error);
+        if (error) {
             setLoading(false)
             setError(error)
             console.log(error)
         }
-        if(data){
+        if (data) {
             setLoading(false);
             !id && form.reset()
-            id && queryClient.invalidateQueries(['PROPERTY', {id}])
-            toast(data.message, {position:'top-center'})
-        }       
+            id && queryClient.invalidateQueries(['PROPERTY', { id }])
+            toast(data.message, { position: 'top-center' })
+        }
     }
-    
-    return(
+
+    return (
         <>
-            <form 
+            <form
                 //action="" 
-                 onSubmit={(e) => {
+                onSubmit={(e) => {
                     e.preventDefault()
                     form.handleSubmit()
                 }}
 
-            > 
+            >
                 <FieldGroup>
                     <Field>
                         <FieldLabel>Property Picture</FieldLabel>
                         <form.Field
                             name="picture"
-                            children={(field)=> {
+                            children={(field) => {
                                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-                                return(
+                                return (
                                     <>
-                                    <ImageSelect 
-                                        value={field.state.value ?? null}
-                                        onUpload={(value)=> field.handleChange(value)}
-                                    />
-                                     {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                        <ImageSelect
+                                            value={field.state.value ?? null}
+                                            onUpload={(value) => field.handleChange(value)}
+                                        />
+                                        {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                     </>
                                 )
                             }}
-                         />
+                        />
                     </Field>
                     <div>
-                        
-                             <form.Field
-                                name="name"
-                                children={(field)=> {
-                                    const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-                                    return(
-                                        <Field>
-                                            <FieldLabel>Property Name</FieldLabel>
-                                            <Input 
-                                                type="text" 
-                                                id={field.name}
-                                                name={field.name}
-                                                value={field.state.value as string}
-                                                onBlur={field.handleBlur}
-                                                className="bg-white"
-                                                onChange={(e)=>field.handleChange(e.target.value)}
-                                            />
-                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                                        </Field>
-                                    )
-                                }}
-                             />
+
+                        <form.Field
+                            name="name"
+                            children={(field) => {
+                                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                                return (
+                                    <Field>
+                                        <FieldLabel>Property Name</FieldLabel>
+                                        <Input
+                                            type="text"
+                                            id={field.name}
+                                            name={field.name}
+                                            value={field.state.value as string}
+                                            onBlur={field.handleBlur}
+                                            className="bg-white"
+                                            onChange={(e) => field.handleChange(e.target.value)}
+                                        />
+                                        {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                    </Field>
+                                )
+                            }}
+                        />
                     </div>
-                    
+
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-6 ">
                         <div className="col-span-full sm:col-span-3">
                             <form.Field
                                 name="units"
-                                children={(field)=> {
+                                children={(field) => {
                                     const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-                                    return(
+                                    return (
                                         <Field>
                                             <FieldLabel>Number of Units</FieldLabel>
-                                            <Input 
-                                                type="number" 
+                                            <Input
+                                                type="number"
                                                 id={field.name}
                                                 name={field.name}
                                                 value={field.state.value}
                                                 onBlur={field.handleBlur}
                                                 className="bg-white"
-                                                onChange={(e)=>field.handleChange(e.target.valueAsNumber)}
+                                                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
                                             />
-                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                            {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
                                     )
                                 }}
-                             />
+                            />
                         </div>
                         <div className="col-span-full sm:col-span-3">
                             <form.Field
                                 name="water_cost"
-                                children={(field)=> {
+                                children={(field) => {
                                     const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-                                    return(
+                                    return (
                                         <Field>
                                             <FieldLabel>Water Unit Cost</FieldLabel>
-                                            <Input 
-                                                type="number" 
+                                            <Input
+                                                type="number"
                                                 id={field.name}
                                                 name={field.name}
                                                 value={field.state.value}
                                                 onBlur={field.handleBlur}
                                                 className="bg-white"
-                                                onChange={(e)=>field.handleChange(e.target.valueAsNumber)}
+                                                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
                                             />
-                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                            {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
                                         </Field>
                                     )
                                 }}
-                             />
+                            />
                         </div>
                     </div>
                     <div>
-                            <form.Field
-                                name="location"
-                                children={(field)=> {
-                                    const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-                                    return(
-                                        <Field>
-                                            <FieldLabel>Location</FieldLabel>
-                                            <Input 
-                                                type="text" 
-                                                id={field.name}
-                                                name={field.name}
-                                                value={field.state.value as string}
-                                                onBlur={field.handleBlur}
-                                                className="bg-white"
-                                                onChange={(e)=>field.handleChange(e.target.value)}
-                                            />
-                                             {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                                        </Field>
-                                    )
-                                }}
-                             />
-                        </div>
+                        <form.Field
+                            name="location"
+                            children={(field) => {
+                                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                                return (
+                                    <Field>
+                                        <FieldLabel>Location</FieldLabel>
+                                        <Input
+                                            type="text"
+                                            id={field.name}
+                                            name={field.name}
+                                            value={field.state.value as string}
+                                            onBlur={field.handleBlur}
+                                            className="bg-white"
+                                            onChange={(e) => field.handleChange(e.target.value)}
+                                        />
+                                        {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                    </Field>
+                                )
+                            }}
+                        />
+                    </div>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-6 ">
                         <div className="col-span-full sm:col-span-3">
-                            {landlords && 
-                            <Field>
-                                <FieldLabel>Select Property Landlord</FieldLabel>
-                                <form.Field 
-                                    name="landlord"
-                                    children={(field)=> {
-                                        const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-                                        return(
-                                            <>
-                                                <Dropdown
-                                                    items={items}
-                                                    value={field.state.value}
-                                                    placeholder="Select Landlord"
-                                                    handleChange={(item:ItemType)=> {
-                                                        field.handleChange(item.name)
-                                                        form.setFieldValue("landlord_id", item.id)
-                                                    }}
-                                                />
-                                                {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                                            </>
-                                        )
-                                    }}
-                                />
-                                
-                            </Field>
+                            {landlords &&
+                                <Field>
+                                    <FieldLabel>Select Property Landlord</FieldLabel>
+                                    <form.Field
+                                        name="landlord"
+                                        children={(field) => {
+                                            const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                                            return (
+                                                <>
+                                                    <Dropdown
+                                                        items={items}
+                                                        value={field.state.value}
+                                                        placeholder="Select Landlord"
+                                                        handleChange={(item: ItemType) => {
+                                                            field.handleChange(item.name)
+                                                            form.setFieldValue("landlord_id", item.id)
+                                                        }}
+                                                    />
+                                                    {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                                </>
+                                            )
+                                        }}
+                                    />
+
+                                </Field>
                             }
                         </div>
                         <div className="col-span-full sm:col-span-3">
-                            <form.Field 
+                            <form.Field
                                 name="rent_due_date"
-                                children={(field)=> {
-                                    return(
+                                children={(field) => {
+                                    return (
                                         <Field>
                                             <FieldLabel>Rent Due Date (When is rent due every month)</FieldLabel>
                                             <InputGroup>
-                                                <InputGroupInput 
+                                                <InputGroupInput
                                                     type="number"
                                                     name={field.name}
                                                     id={field.name}
                                                     value={field.state.value}
-                                                    onChange={(e)=>field.handleChange(e.target.valueAsNumber)}
+                                                    onChange={(e) => field.handleChange(e.target.valueAsNumber)}
                                                     placeholder="e.g 5"
-                                                 />
+                                                />
                                                 <InputGroupAddon>
                                                     <IconCalendar />
                                                 </InputGroupAddon>
@@ -310,14 +311,14 @@ export default function AddProperty(){
                                 }}
                             />
                         </div>
-                    </div>         
+                    </div>
                     <div>
-                        <form.Field 
+                        <form.Field
                             name="deposit_required"
-                            children={(field)=> {
-                                return(
+                            children={(field) => {
+                                return (
                                     <label className={cn('flex items-start border rounded-md p-2 gap-4', field.state.value && 'border-blue-600 bg-blue-50')}>
-                                        <Checkbox 
+                                        <Checkbox
                                             id="deposit_required"
                                             name={field.name}
                                             checked={field.state.value}
@@ -338,48 +339,48 @@ export default function AddProperty(){
                     <div>
                         <form.Field
                             name="property_type"
-                            children={(field)=> {
+                            children={(field) => {
                                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-                                return(
-                                <Field >
-                                <FieldLabel>Property Type</FieldLabel>
-                                <RadioGroup
-                                    className="grid grid-cols-1 sm:grid-cols-3 gap-5"
-                                    value={field.state.value}
-                                    onValueChange={(value) =>
-                                        field.handleChange(value)
-                                    }
-                                >
-                                    {propertyTypes.map((item) => {
-                                        const isSelected = item.title === field.state.value
-                                        return(
-                                            <div
-                                                key={item.title}
-                                                className={cn("border-input cursor-pointer relative flex flex-col gap-2 rounded-md border p-4 shadow-xs outline-none", isSelected && 'border-blue-600 bg-blue-50')}
-                                            >
-                                                <div className="flex justify-between">
-                                                <RadioGroupItem
-                                                    id={item.id.toString()}
-                                                    value={item.title}
-                                                    className="order-1 after:absolute after:inset-0"
-                                                />
+                                return (
+                                    <Field >
+                                        <FieldLabel>Property Type</FieldLabel>
+                                        <RadioGroup
+                                            className="grid grid-cols-1 sm:grid-cols-3 gap-5"
+                                            value={field.state.value}
+                                            onValueChange={(value) =>
+                                                field.handleChange(value)
+                                            }
+                                        >
+                                            {propertyTypes.map((item) => {
+                                                const isSelected = item.title === field.state.value
+                                                return (
+                                                    <div
+                                                        key={item.title}
+                                                        className={cn("border-input cursor-pointer relative flex flex-col gap-2 rounded-md border p-4 shadow-xs outline-none", isSelected && 'border-blue-600 bg-blue-50')}
+                                                    >
+                                                        <div className="flex justify-between">
+                                                            <RadioGroupItem
+                                                                id={item.id.toString()}
+                                                                value={item.title}
+                                                                className="order-1 after:absolute after:inset-0"
+                                                            />
 
-                                                <FieldLabel
-                                                    htmlFor={item.id.toString()}
-                                                    className={cn("block text-sm font-medium text-muted-foreground", isSelected && 'text-primary')}
-                                                >
-                                                    {item.title}
-                                                </FieldLabel>
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
-                                </RadioGroup>
-                                {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                                </Field>
+                                                            <FieldLabel
+                                                                htmlFor={item.id.toString()}
+                                                                className={cn("block text-sm font-medium text-muted-foreground", isSelected && 'text-primary')}
+                                                            >
+                                                                {item.title}
+                                                            </FieldLabel>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </RadioGroup>
+                                        {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                    </Field>
                                 )
                             }}
-                         />
+                        />
                     </div>
                 </FieldGroup>
                 <Separator className="my-3" />
