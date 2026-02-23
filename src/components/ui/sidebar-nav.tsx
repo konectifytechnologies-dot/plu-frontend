@@ -130,13 +130,7 @@ export function NavMain() {
         }
       ]
     },
-    {
-      name:'My Account',
-      slug:'my_account',
-      icon:IconUser,
-      url: '/account/$role/account',
-      display:true,
-    }
+    
   ];
   return (
     <SidebarMenu >

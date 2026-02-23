@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default axios.create({
-    baseURL:'http://localhost:8000',
+    baseURL:'https://api.pludevelopers.co.ke',
     withCredentials:true,
     withXSRFToken:true
 });

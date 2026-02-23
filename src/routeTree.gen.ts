@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
@@ -25,6 +26,11 @@ import { Route as AccountRoleAddRepairsRouteImport } from './routes/account/$rol
 import { Route as AccountRoleAddPaymentRouteImport } from './routes/account/$role/add-payment'
 import { Route as AccountRolePropertyIdRouteImport } from './routes/account/$role/property/$id'
 
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRouteWithChildren
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/account/$role': typeof AccountRoleRouteWithChildren
   '/account/$role/add-payment': typeof AccountRoleAddPaymentRoute
   '/account/$role/add-repairs': typeof AccountRoleAddRepairsRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRouteWithChildren
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/account/$role': typeof AccountRoleRouteWithChildren
   '/account/$role/add-payment': typeof AccountRoleAddPaymentRoute
   '/account/$role/add-repairs': typeof AccountRoleAddRepairsRoute
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/account': typeof AccountRouteWithChildren
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/account/$role': typeof AccountRoleRouteWithChildren
   '/account/$role/add-payment': typeof AccountRoleAddPaymentRoute
   '/account/$role/add-repairs': typeof AccountRoleAddRepairsRoute
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/login'
+    | '/register'
     | '/account/$role'
     | '/account/$role/add-payment'
     | '/account/$role/add-repairs'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/login'
+    | '/register'
     | '/account/$role'
     | '/account/$role/add-payment'
     | '/account/$role/add-repairs'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/login'
+    | '/register'
     | '/account/$role'
     | '/account/$role/add-payment'
     | '/account/$role/add-repairs'
@@ -211,10 +223,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRouteWithChildren
   LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -370,6 +390,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRouteWithChildren,
   LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -33,6 +33,7 @@ export default function AddProperty(){
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [file, setFile] = useState(null)
   const {property_id} = useSearch({strict:false});
   const id  = property_id === undefined || property_id === null ? null : property_id;
   const btntext = id ? 'Save Changes' : 'Add Property';
@@ -74,7 +75,8 @@ export default function AddProperty(){
 
     const form = useForm({
         defaultValues:{
-            picture:'',
+            picture:null,
+            pictureUrl: '',
             name: '',
             units: null,
             location: '',
@@ -95,7 +97,8 @@ export default function AddProperty(){
     useEffect(()=> {
         if(id && property){
             form.reset({
-                picture: property.picture,
+                picture: null,
+                pictureUrl:property.picture,
                 name: property.name,
                 units: property.units,
                 location: property.location,
@@ -109,13 +112,22 @@ export default function AddProperty(){
         }
     },[id, property])
 
-    console.log(property)
+    
     const handleAddProperty = async(value)=> {
-        setLoading(true);
+        const formData = new FormData();
+        for (const key in value) {
+            const field = value[key]
+            if (field instanceof File) {
+            formData.append(key, field)
+            } else if (field !== null && field !== undefined) {
+                formData.append(key, String(field))
+            }
+        }
+      
+        setLoading(true); 
         const url =  id ? `/api/property/${id}` : '/api/property';
-        const method = id ? 'patch' : 'post'
         const {data,error} = await apiRequest(()=> 
-            axios[method](url, value)
+            axios.post(url, formData)
         )  
         if(error){
             setLoading(false)
@@ -127,7 +139,8 @@ export default function AddProperty(){
             !id && form.reset()
             id && queryClient.invalidateQueries(['PROPERTY', {id}])
             toast(data.message, {position:'top-center'})
-        }       
+        }
+       
     }
     
     return(
@@ -144,13 +157,14 @@ export default function AddProperty(){
                     <Field>
                         <FieldLabel>Property Picture</FieldLabel>
                         <form.Field
-                            name="picture"
+                            name="pictureUrl"
                             children={(field)=> {
                                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-                                return(
+                                return( 
                                     <>
                                     <ImageSelect 
                                         value={field.state.value ?? null}
+                                        handleChange={(file)=> form.setFieldValue('picture', file)}
                                         onUpload={(value)=> field.handleChange(value)}
                                     />
                                      {isInvalid && (<FieldError errors={field.state.meta.errors} />)}

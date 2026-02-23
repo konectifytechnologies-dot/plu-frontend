@@ -154,7 +154,7 @@ function RouteComponent() {
                      <Separator className="my-6" />
                     <RepairItems setRepairItems={setRepairItems} repairItems={repairItems}/> 
                     <Separator className='my-4' />
-                    <Submitbtn text="Add Repair" type="button" fullwidth={true} btnfn={addrepairs} loading={false} />     
+                    <Submitbtn text="Add Repair" type="button" fullwidth={true} btnfn={addrepairs} loading={loading} />     
               </form>
           </CardContent>
         </Card>

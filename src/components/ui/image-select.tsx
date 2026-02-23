@@ -5,7 +5,8 @@ import { IconPhoto, IconX } from "@tabler/icons-react"
 
 export type ImageSelectProps = {
   /** Called when an upload finishes and returns a public URL */
-  onUpload?: (value:string | null) => void
+  onUpload?: (value:any) => void
+  handleChange: (file:any) => void
   /** Existing image URL (from DB / form value) */
   value?: string | null
   disabled?: boolean
@@ -16,6 +17,7 @@ export type ImageSelectProps = {
 
 export const ImageSelect = ({
   onUpload,
+  handleChange,
   value,
   disabled,
   accept = "image/*",
@@ -30,31 +32,30 @@ export const ImageSelect = ({
   useEffect(() => {
     if (value) {
       setPreview(value)
+     
     }
   }, [value])
 
-  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange =  (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-
+    
     // 1️⃣ Create local preview
     const reader = new FileReader()
     reader.onloadend = () => {
       setPreview(reader.result as string)
     }
     reader.readAsDataURL(file)
-
+    handleChange(file);
     // 2️⃣ Upload later (S3 / Firebase / etc.)
     if (!onUpload) return
 
-    try {
-      setLoading(true)
-      onUpload && onUpload(reader.result as string)
+  
+      //
+      //onUpload(reader.result as string)
       // result should be a public URL
       // ImageSelect does NOT store this
-    } finally {
-      setLoading(false)
-    }
+    
   }
 
   const handleRemove = () => {

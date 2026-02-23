@@ -10,6 +10,7 @@ import { useForm } from "@tanstack/react-form";
 import type { LandlordFormValues, LandlordType } from "./types/PropertyTypes";
 import axios from "@/lib/axios";
 import { apiRequest } from "@/lib/apirequest";
+import { toast } from "sonner";
 
 
 interface AddLandLordProps {
@@ -51,6 +52,7 @@ export default function AddLandlord({initialData}:AddLandLordProps) {
             }
             if(data){
                 setLoading(false);
+                toast(data.message,{position:'top-center'})
                 form.reset()
                 console.log(data);
             }            
