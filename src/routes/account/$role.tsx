@@ -4,14 +4,16 @@ import { getUserData } from '@/queries/fetchQueries';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 //const allowedRoles = ['admin', 'agent', 'landlord'] as const
-
+type ParamsType = {
+  role: string
+}
 export const Route = createFileRoute('/account/$role')({
-  loader: ({ context }) => context.queryClient.ensureQueryData(getUserData),
+  loader: ({params, context }:{params:ParamsType, context:any}) => context.queryClient.ensureQueryData(getUserData),
   component: RoleLayout,
 });
 
-function RoleLayout() {
-  const { role } = Route.useParams()
+function RoleLayout() { 
+
   return (
       <div>
         <Outlet />

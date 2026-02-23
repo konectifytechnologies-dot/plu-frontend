@@ -27,7 +27,7 @@ export default function AddUnit({ initialData }: UnitProps) {
     const [error, setError] = useState(null);
     const btn_text = isEditMode ? 'Save Changes' : 'Add Unit';
 
-    const { data: properties, isLoading } = useQuery({
+    const { data: properties } = useQuery({
         queryKey: ['USER_PROPERTIES'],
         queryFn: async () => {
             const { data } = await axios.get('/api/properties')

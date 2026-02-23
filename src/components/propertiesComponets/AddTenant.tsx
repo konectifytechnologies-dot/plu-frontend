@@ -111,7 +111,7 @@ export default function AddTenant({ initialData }: UnitProps) {
             !isEditMode && form.reset()
             toast(data.message, { position: 'top-center' })
             const query = id ? ['PROPERTY_TENANTS', { id }] : ['USER_TENANTS', { page: 1, query: '' }]
-            queryClient.invalidateQueries(query)
+            queryClient.invalidateQueries({queryKey:query})
 
         }
     }
@@ -175,7 +175,7 @@ export default function AddTenant({ initialData }: UnitProps) {
                         <form.Field
                             name="email"
                             children={(field) => {
-                                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                              
                                 return (
                                     <Field className="gap-2">
                                         <FieldLabel htmlFor="first-name">Tenant Email Address<span className="text-red-500">*</span></FieldLabel>

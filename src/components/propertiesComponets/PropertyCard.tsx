@@ -2,13 +2,13 @@ import { Link } from "@tanstack/react-router"
 import { Button } from "../ui/button"
 import type { Property } from "./types/PropertyTypes"
 import { IconEdit, IconEye } from "@tabler/icons-react"
-import Addnew from "../ui/add-new"
-import AddProperty from "./AddProperty"
+import { useParams } from "@tanstack/react-router"
 
 interface PropertyProps {
     property: Property
 }
 export default function PropertyCard({property}:PropertyProps){
+    const { role } = useParams({ strict: false })
     const {id, name, picture, landlord, agent} = property
 
     return(
@@ -25,16 +25,16 @@ export default function PropertyCard({property}:PropertyProps){
                 <div className="flex items-center gap-2"> 
                     <Button asChild>
                         <Link 
-                            to='/account/$role/property/$id'
-                            params={{id:id}}
+                            to={`/account/${role}/property/${id}`}
+                            //params={{role, id}}
                         >
                             <IconEye />View Property
                         </Link>
                     </Button>
                     <Button asChild>
                         <Link 
-                            to={`/account/$role/add_property`}
-                            search={{property_id:id}}
+                            to={`/account/$role/add_property?property_id=${id}`}
+                            //search={{property_id:id}}
                         >
                             <IconEdit />
                             Edit Property

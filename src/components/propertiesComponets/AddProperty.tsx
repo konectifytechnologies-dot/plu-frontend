@@ -127,7 +127,7 @@ export default function AddProperty(){
         if (data) {
             setLoading(false);
             !id && form.reset()
-            id && queryClient.invalidateQueries(['PROPERTY', {id}])
+            id && queryClient.invalidateQueries({queryKey:['PROPERTY', {id}]})
             toast(data.message, {position:'top-center'})
         }       
     }

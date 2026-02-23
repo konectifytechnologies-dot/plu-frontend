@@ -1,8 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { IconBuilding, IconMap, IconUserScreen, IconUser, IconPlus } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
 import { IconFolderCode } from "@tabler/icons-react"
-import { ArrowUpRightIcon, Proportions } from "lucide-react"
 import {
     Empty,
     EmptyContent,
@@ -26,6 +24,7 @@ import { Search } from "lucide-react"
 import { useState } from "react";
 import ListPagination from "../ui/list-pagination";
 import { Link } from "@tanstack/react-router";
+import { Button } from "../ui/button";
 
 
 
@@ -33,7 +32,7 @@ import { Link } from "@tanstack/react-router";
 export default function PropertiesList() {
     const [page, setPage] = useState(1);
     const [query, setQuery] = useState('')
-    const { data: properties, isLoading, isPending } = useQuery({
+    const { data: properties, isLoading } = useQuery({
         queryKey: ["USER_PROPERTIES", { page, query }],
         queryFn: async () => {
             const { data } = await axios.get(`/api/properties?page=${page}&query=${query}`);

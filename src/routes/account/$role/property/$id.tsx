@@ -15,10 +15,15 @@ import ReadingsList from '@/components/utilitiescomponents/ReadingsTable';
 import AddCost from '@/components/propertiesComponets/AddCost';
 import PropertyCosts from '@/components/propertiesComponets/PropertyCosts';
 
+type PropertyRouteParams = {
+  role: string
+  id: string
+}
+
 export const Route = createFileRoute('/account/$role/property/$id')({
   pendingComponent:()=> (<div>Loading...</div>),
-  loader: ({ params, context }) => {
-    const { id } = params
+  loader: ({ params, context } :{params:PropertyRouteParams; context:any}) => {
+    const {role, id } = params
     return context.queryClient.ensureQueryData(
       getProperty(id)
     )

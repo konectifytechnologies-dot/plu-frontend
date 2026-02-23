@@ -20,7 +20,7 @@ import ListPagination from "../ui/list-pagination"
 export default function LandlordList(){
     const [query, setQuery] = useState('');
     const [page, setPage] = useState(1);
-    const [is_active, setIsActive] = useState(false);
+    const is_active = false;
 
     const {data:users, isLoading} = useQuery({
         queryKey:['AGENT_LANDLORDS', {query, page, is_active}],
