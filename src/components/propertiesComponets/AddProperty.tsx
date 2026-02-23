@@ -75,6 +75,7 @@ export default function AddProperty(){
     const form = useForm({
         defaultValues:{
             picture:'',
+            pictureUrl:'',
             name: '',
             units: null,
             location: '',
@@ -115,9 +116,8 @@ export default function AddProperty(){
     const handleAddProperty = async(value)=> {
         setLoading(true);
         const url =  id ? `/api/property/${id}` : '/api/property';
-        const method = id ? 'patch' : 'post'
         const {data,error} = await apiRequest(()=> 
-            axios[method](url, value)
+            axios.post(url, value)
         )  
         if(error){
             setLoading(false)
@@ -146,13 +146,14 @@ export default function AddProperty(){
                     <Field>
                         <FieldLabel>Property Picture</FieldLabel>
                         <form.Field
-                            name="picture"
+                            name="pictureUrl"
                             children={(field)=> {
                                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
                                 return(
                                     <>
                                     <ImageSelect 
                                         value={field.state.value ?? null}
+                                        handleChange={(file)=> form.setFieldValue('picture', file)}
                                         onUpload={(value)=> field.handleChange(value)}
                                     />
                                      {isInvalid && (<FieldError errors={field.state.meta.errors} />)}

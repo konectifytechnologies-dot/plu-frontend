@@ -38,7 +38,6 @@ export default function AddLandlord({ initialData }: AddLandLordProps) {
 
     })
 
-<<<<<<< HEAD
     const handleAddLandlord = async(value:LandlordFormValues)=> {
             setLoading(true)
             const url = isEditMode ? `/api/user/${initialData.id}` : '/api/landlord';
@@ -57,26 +56,6 @@ export default function AddLandlord({ initialData }: AddLandLordProps) {
                 form.reset()
                 console.log(data);
             }            
-=======
-    const handleAddLandlord = async (value: LandlordFormValues) => {
-        setLoading(true)
-        const url = isEditMode ? `/api/user/${initialData.id}` : '/api/landlord';
-        const method = isEditMode ? 'patch' : 'post';
-        const { data, error } = await apiRequest(() =>
-            axios[method](url, value)
-        )
-        if (error) {
-            setLoading(false)
-            setError(error)
-            console.log(error)
-        }
-        if (data) {
-            setLoading(false);
-            form.reset()
-            toast(data.message, { position: 'top-center' });
-            console.log(data);
-        }
->>>>>>> cbcf0d100ff5eac7836dedc6cb445c55d3235576
     }
 
     const types: Array<string> = ["individual", "company"]

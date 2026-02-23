@@ -159,56 +159,6 @@ export default function LoginForm(){
                 <Separator className="my-4" />
                 <Submitbtn text="Login" fullwidth={true} type="submit" loading={loading} />
             </form>
-            {/*<form action="" className="grid grid-cols-1 gap-8">
-                <div>
-          <Label htmlFor="number" className="font-sans">Phone Number or Email Address</Label>
-          <div className="relative mt-2.5">
-            <Input
-              id="login"
-              className="peer ps-9 bg-white"
-              type="text"
-             
-            />
-            <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
-              <IconMail size={16} aria-hidden="true" />
-            </div>
-          </div>
-        </div>
-        <div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password" className="font-sans">Password</Label>
-            <a href="#" className="text-sm font-sans text-primary hover:underline">
-              Forgot Password?
-            </a>
-          </div>
-          <div className="relative mt-2.5">
-            <Input
-              id="password"
-              className="ps-9 bg-white"
-              placeholder="Enter your password"
-              
-              type={isVisible ? "text" : "password"}
-            />
-            <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
-              <IconLock size={16} aria-hidden="true" />
-            </div>
-            <button
-              className="text-muted-foreground/80 cursor-pointer hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-              type="button"
-              onClick={toggleVisibility}
-              //aria-label={isVisible ? "Hide password" : "Show password"}
-              //aria-pressed={isVisible}
-              //aria-controls="password"
-            >
-              {isVisible ? (
-                <IconEyeOff size={16} aria-hidden="true" />
-              ) : (
-                <IconEye size={16} aria-hidden="true" />
-              )}
-            </button>
-          </div>
-        </div>
-            </form>*/}
         </>
     )
 }
