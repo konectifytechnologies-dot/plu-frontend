@@ -1,8 +1,6 @@
-import { IconHome, IconUsers,IconBuilding,IconWindow,   IconRippleDown,
+import { IconHome, IconUsers,IconBuilding,IconWindow,
   IconMoneybag,
   IconSettings,
-  IconUser,
-  IconLogout,
   IconPlus,
   IconSettings2
  } from '@tabler/icons-react';
@@ -22,9 +20,6 @@ import {
 } from "@/components/ui/collapsible";
 import { useSidebar } from '@/components/ui/sidebar';
 import { Link } from "@tanstack/react-router";
-import { logOut } from '@/lib/auth';
-import { useNavigate } from '@tanstack/react-router';
-import { useDisclosure } from '@mantine/hooks';
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from 'react';
 import { useLocation } from '@tanstack/react-router';
@@ -36,7 +31,7 @@ export function NavMain() {
   const isCollapsed = state === "collapsed";
   const [openCollapsible, setOpenCollapsible] = useState<string | null>(null);
   const location = useLocation();
-  const {data:user, isLoading, isError, error} = useQuery({
+  const {data:user} = useQuery({
       queryKey:['USER_DATA'],
       queryFn: getLoggedInUser
   })
@@ -226,119 +221,4 @@ export function NavMain() {
       })}
     </SidebarMenu>
   );
-}
-
-const SecondaryNav = ()=> {
- const { state } = useSidebar();
- const [open, handlers] = useDisclosure(false)
-
-  const links = [
-    {
-      name: "Payments",
-      url: "/account/$role/payments",
-      icon: IconMoneybag,
-    },
-    
-    {
-      name: 'Utilities',
-      url: `/account/$role/utilities`,
-      icon: IconRippleDown
-    }
-  ]
-  return(
-    <>
-      <SidebarMenu>
-        {links.map((item) => (
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.name}>
-                <Link to={item.url}>
-                  <item.icon />
-                  <span>{item.name}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-        ))}
-        <SidebarMenuItem>
-          <Collapsible
-            open={open}
-            onOpenChange={()=>handlers.toggle()}
-          >
-            <CollapsibleTrigger asChild>
-              <SidebarMenuButton
-                className={cn(
-                  "flex w-full items-center rounded-lg transition-colors",
-                  open && "bg-sidebar-muted text-foreground")}
-              >
-                <p className="flex gap-2 items-center text-sm font-medium">
-                  <IconSettings />
-                  <span>Repairs</span>
-                </p>
-                 <span className="ml-auto">
-                        {open ? (<ChevronUp className="size-4" />) : (<ChevronDown className="size-4" />)}
-                  </span>
-              </SidebarMenuButton>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-                  <SidebarMenuSub className="my-1 ml-3.5 ">
-                      <SidebarMenuSubItem >
-                        <SidebarMenuSubButton asChild>
-                          <Link
-                              to="/account/$role/repairs"
-                              className="flex items-center rounded-md px-4 py-1.5 text-sm font-medium text-muted-foreground hover:bg-sidebar-muted hover:text-foreground"
-                          >
-                             Repairs
-                          </Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                       <SidebarMenuSubItem >
-                        <SidebarMenuSubButton asChild>
-                          <Link
-                              to="/account/$role/add-repairs"
-                              className="flex items-center rounded-md px-4 py-1.5 text-sm font-medium text-muted-foreground hover:bg-sidebar-muted hover:text-foreground"
-                          >
-                            Add Repair
-                          </Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                  </SidebarMenuSub>
-            </CollapsibleContent>
-              
-          </Collapsible>
-          
-        </SidebarMenuItem>
-      </SidebarMenu>
-    </>
-  )
-}
-
-const AccountNav = () => {
-  const navigate = useNavigate()
-  const logout = async()=> {
-          const data = await logOut();
-          console.log(data);
-          navigate({to:'/login', replace:true}) 
-  } 
-
-  return(
-    <>
-      <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Profile">
-              <Link to="/account/$role/profile">
-                  <IconUser />
-                  <span>My Profile</span>
-                </Link>
-              </SidebarMenuButton>
-          </SidebarMenuItem>
-      </SidebarMenu>
-      <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={logout} className='cursor-pointer' tooltip="Log-out">
-                  <IconLogout />
-                  <span>Log-Out</span>
-              </SidebarMenuButton>
-          </SidebarMenuItem>
-      </SidebarMenu>
-    </>
-  )
 }

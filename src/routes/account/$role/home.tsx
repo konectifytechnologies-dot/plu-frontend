@@ -28,6 +28,7 @@ export const Route = createFileRoute('/account/$role/home')({
 })
 
 function RouteComponent() {
+    const {role} = Route.useParams();
   const {data} = useSuspenseQuery({
     queryKey:['USER_STATS_DATA'],
     queryFn: getAgent,
@@ -85,7 +86,13 @@ function RouteComponent() {
                     <CardFooter className="flex-col items-start gap-1.5 text-sm">
                         <Separator className="my-2" />
                         <Button className='w-full' asChild>
-                            <Link to="/account/$role/add_property" ><IconPlus />Add Property</Link>
+                            <Link 
+                                to="/account/$role/add_property" 
+                                params={{role}}
+                                search={{property_id:''}}
+                            >
+                                <IconPlus />Add Property
+                            </Link>
                         </Button>
                     </CardFooter> 
             </Card>

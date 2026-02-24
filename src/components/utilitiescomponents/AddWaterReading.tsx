@@ -1,11 +1,9 @@
 import { useForm } from "@tanstack/react-form"
-import { waterReadingSchema } from "@/schemas/water-reading.schema"
 import { useState } from "react"
 import { useParams } from "@tanstack/react-router"
 import { useGetPropertyUnits } from "@/hooks/useGetPropertyUnits"
-import { Field, FieldLabel, FieldContent, FieldTitle, FieldDescription, FieldError} from "../ui/field"
+import { Field, FieldLabel, FieldError} from "../ui/field"
 import Dropdown from "../ui/dropdown"
-import type { ItemType } from "../propertiesComponets/types/PropertyTypes"
 import { Input } from "../ui/input"
 import { Checkbox } from "../ui/checkbox"
 import { cn } from "@/lib/utils"
@@ -14,13 +12,13 @@ import Submitbtn from "../ui/submitbtn"
 import { Separator } from "../ui/separator"
 import axios from "@/lib/axios"
 import { apiRequest } from "@/lib/apirequest"
+import { toast } from "sonner"
 
 export default function AddWaterReading(){
     const [hasPreviousReading, handlers] = useDisclosure(false)
     const {id} = useParams({strict:false})
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null)
-    const {units, isLoading} = useGetPropertyUnits(id ? id : null);
+    const {units} = useGetPropertyUnits(id ? id : null);
     const items = units && units.map((unit)=> {
         return {name:unit.name, id:unit.id}
     }) 
@@ -30,12 +28,9 @@ export default function AddWaterReading(){
             property_id:id, 
             unit_id:'',
             house:'',
-            current_reading:null,
-            previous_reading:null,
+            current_reading:0,
+            previous_reading:0,
 
-        },
-        validators: {
-            onSubmit:waterReadingSchema
         },
         onSubmit: async({value})=> {
             await handleAddUtility(value)
@@ -44,21 +39,22 @@ export default function AddWaterReading(){
 
     
     const handleAddUtility = async(value)=> {
-        //const {data} = await axios.post('/api/utility', value)
+        setLoading(true);
         const url = '/api/utility';
         const {data,error} = await apiRequest(()=> 
             axios.post(url, value)
         )  
+        console.log(data, error);
         if(error){
             setLoading(false)
-            setError(error)
             console.log(error)
         }
         if(data){
             setLoading(false);
             form.reset()
+            toast(data.message, { position: 'top-center' })
             console.log(data);
-        } 
+        }
         
     }
     return(
@@ -82,13 +78,13 @@ export default function AddWaterReading(){
                                             items={items}
                                             placeholder="Select Property"
                                             value={field.state.value}
-                                            handleChange={(item:ItemType)=> {
+                                            handleChange={(item:any)=> {
                                                 field.handleChange(item.name)
                                                 form.setFieldValue("unit_id", item.id)
                                             }}
                                         />
                                         {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
-                                    </Field>
+                                    </Field> 
                                 )
                             }}
                         />}
@@ -136,7 +132,7 @@ export default function AddWaterReading(){
                                         type="number"
                                         name={field.name}
                                         id={field.name}
-                                        value={field.state.value as number | null}
+                                        value={field.state.value as number}
                                         onChange={(e)=> field.handleChange(e.target.valueAsNumber)}
                                         className="bg-white"
                                     />

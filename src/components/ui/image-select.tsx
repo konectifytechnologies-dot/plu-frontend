@@ -26,7 +26,7 @@ export const ImageSelect = ({
 }:ImageSelectProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [preview, setPreview] = useState<string | null>(image)
-  const [loading, setLoading] = useState(false)
+
 
   // Sync preview if form already has an image URL (edit mode)
   useEffect(() => {
@@ -79,18 +79,13 @@ export const ImageSelect = ({
 
           <Button
             type="button"
-            disabled={disabled || loading}
             onClick={handleRemove}
             className="absolute right-1 top-1 rounded  px-2 py-1 text-xs text-white"
           >
             <IconX />Change Picture
           </Button>
 
-          {loading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-xs text-white">
-              Uploading…
-            </div>
-          )}
+    
         </div>
       ) : (
         <Button

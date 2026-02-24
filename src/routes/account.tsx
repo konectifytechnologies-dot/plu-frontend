@@ -15,7 +15,7 @@ export const Route = createFileRoute('/account')({
 })
 
 function AccountLayout() {
-  const {user} = Route.useRouteContext()
+
   
   return (
     <>

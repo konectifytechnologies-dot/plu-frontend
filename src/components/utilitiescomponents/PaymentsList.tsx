@@ -26,6 +26,7 @@ import { Button } from "../ui/button";
 import { IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { apiRequest } from "@/lib/apirequest";
+import { Spinner } from "../ui/spinner";
 
 export default function PaymentList(){
     const [page, setPage] = useState(1)
@@ -160,11 +161,21 @@ const DeletePayment = ({id,month, page, year, query})=> {
             console.log(data);
             setLoading(false);
             toast(data.message,{position:'top-center'})
-            queryClient.invalidateQueries(['PAYMENTS', {page, month, year, query}])
+            queryClient.invalidateQueries({queryKey: ['PAYMENTS', {page, month, year, query}]})
             
         } 
     }
     return(
-        <Button type="button" variant="destructive" onClick={handleDelete}><IconTrash />Delete</Button>
+        <Button type="button" variant="destructive" onClick={handleDelete}>
+            {loading 
+            ? 
+            <span className="flex items-center gap-2">
+                <span className="text-muted-foreground font-text tracking-tight text-sm">Loading...</span>
+                <Spinner />
+            </span>
+             : 
+             <><IconTrash />Delete</>
+             }
+        </Button>
     )
 }

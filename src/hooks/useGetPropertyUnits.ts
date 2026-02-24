@@ -1,4 +1,3 @@
-import type { Unit } from "@/schemas";
 import { useQuery, queryOptions} from "@tanstack/react-query";
 import axios from "@/lib/axios";
 import type { UnitType } from "@/components/propertiesComponets/types/PropertyTypes";

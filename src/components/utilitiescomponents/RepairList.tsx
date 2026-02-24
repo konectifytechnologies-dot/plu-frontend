@@ -162,7 +162,7 @@ const UpdateStatus = ({id, page}:UpdateStatusProps) => {
         if(data){
             setLoading(false);
             toast(data.message,{position:'top-center'})
-            queryClient.invalidateQueries(['REPAIRS', {page, status:''}])
+            queryClient.invalidateQueries({queryKey:['REPAIRS', {page, status:''}]})
         } 
     }
     return(

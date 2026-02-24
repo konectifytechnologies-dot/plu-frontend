@@ -20,7 +20,7 @@ interface AddLandLordProps {
 
 export default function AddLandlord({ initialData }: AddLandLordProps) {
     const isEditMode = Boolean(initialData);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null >(null);
     const [loading, setLoading] = useState(false);
 
     const form = useForm({
@@ -40,7 +40,7 @@ export default function AddLandlord({ initialData }: AddLandLordProps) {
 
     const handleAddLandlord = async(value:LandlordFormValues)=> {
             setLoading(true)
-            const url = isEditMode ? `/api/user/${initialData.id}` : '/api/landlord';
+            const url = isEditMode ? `/api/user/${initialData?.id}` : '/api/landlord';
             const method = isEditMode ? 'patch' : 'post';
             const {data,error} = await apiRequest(()=> 
                 axios[method](url, value)

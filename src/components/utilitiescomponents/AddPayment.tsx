@@ -15,19 +15,18 @@ import { MonthPicker } from "../ui/month-picker";
 
 export default function AddPayment() {
     const { properties } = useGetProperties()
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [property, setProperty] = useState(null);
-    const [tenancy, setTenancy] = useState(null);
-    const [costs, setCosts] = useState(null)
-    const [payment_method, setPaymentMethod] = useState('')
-    const [month, setMonth] = useState('')
+    const [loading, setLoading] = useState<any>(false);
+    const [property, setProperty] = useState<any>(null);
+    const [tenancy, setTenancy] = useState<any>(null);
+    const [costs, setCosts] = useState<any>(null)
+    const [payment_method, setPaymentMethod] = useState<any>('')
+    const [month, setMonth] = useState<any>('')
 
     const propItems = properties && properties.data.map((prop) => {
         return { name: prop.name, id: prop.id }
     })
 
-    const { data: tenants, isLoading } = useQuery({
+    const { data: tenants } = useQuery({
         queryKey: ['PROPERTY_TENANTS', { id: property ? property.id : null }],
         queryFn: async () => {
             const { data } = await axios.get(`/api/property/tenants/${property ? property.id : null}`)
@@ -44,7 +43,7 @@ export default function AddPayment() {
                     id: cost.id,
                     title: cost.title,
                     property_id: cost.property_id,
-                    amount_paid: '',
+                    amount_paid: 0,
                     description: '',
                     reference_code: '',
                 }
@@ -54,7 +53,7 @@ export default function AddPayment() {
                 cost: tenancy.rent,
                 title: 'rent',
                 property_id: property.id || null,
-                amount_paid: '',
+                amount_paid: 0,
                 description: '',
                 reference_code: '',
             }
@@ -86,6 +85,7 @@ export default function AddPayment() {
             date: month,
             costs,
         }
+        console.log(params);
         const url = `/api/payment`
         const { data, error } = await apiRequest(() =>
             axios.post(url, params)
@@ -93,7 +93,6 @@ export default function AddPayment() {
         console.log(data, error);
         if (error) {
             setLoading(false)
-            setError(error)
             console.log(error)
         }
         if (data) {
@@ -132,7 +131,7 @@ export default function AddPayment() {
                     </Field>
                 )}
 
-                <div>
+                <div className="py-4">
                     <label>Payment Method</label>
                     <Input type="text" value={payment_method} onChange={(e) => setPaymentMethod(e.target.value)} />
                 </div>

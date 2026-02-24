@@ -3,7 +3,6 @@ import { useParams } from "@tanstack/react-router"
 import axios from "@/lib/axios";
 import { Skeleton } from "../ui/skeleton";
 import type { UnitType } from "./types/PropertyTypes";
-import { useState } from "react";
 import UnitCard from "./UnitCard";
 import Addnew from "../ui/add-new";
 import AddUnit from "./AddUnit";
@@ -20,7 +19,6 @@ import { IconFolderCode } from "@tabler/icons-react"
 
 export default function UnitsList(){
     const {id} = useParams({strict:false});
-    const [ids, setIds] = useState([])
     const {data:units, isLoading} = useQuery({
         queryKey: ['PROPERTY_UNITS', {id}],
         queryFn: async()=> {

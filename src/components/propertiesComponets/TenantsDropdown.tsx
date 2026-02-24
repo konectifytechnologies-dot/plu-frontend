@@ -7,7 +7,11 @@ import { IconChevronCompactDown, IconChevronCompactUp } from "@tabler/icons-reac
 import { Button } from "../ui/button";
  
  
- 
+type ItemType = {
+    name:string,
+    id:string,
+    number:string
+}
  
  
  export default function TenantsDropdown({items=[], value, placeholder="Select Tenant",  handleChange}){
@@ -23,7 +27,7 @@ import { Button } from "../ui/button";
          }
      }, []);
      
-     const filteredItems = items?.filter((item) =>
+     const filteredItems = items?.filter((item:ItemType) =>
          item?.name?.toLowerCase().includes(search.toLowerCase())
      )
  
@@ -53,7 +57,7 @@ import { Button } from "../ui/button";
                          {items ? 
                              <>
                              {filteredItems?.length > 0 ? (
-                                 filteredItems?.map((item) => (
+                                 filteredItems?.map((item:ItemType) => (
                                      <CommandItem
                                          key={item.id}
                                          onSelect={() => handleValueChange(item)}

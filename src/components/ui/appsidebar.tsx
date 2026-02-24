@@ -1,12 +1,11 @@
-import {Sidebar,SidebarContent, SidebarHeader, useSidebar} from "@/components/ui/sidebar"
+import {Sidebar,SidebarContent, SidebarHeader} from "@/components/ui/sidebar"
 import { NavMain } from "./sidebar-nav"
 import { NavFooter } from "./nav-footer";
-import { cn } from "@/lib/utils";
 
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
+
+export function AppSidebar() {
+
   return (
     <Sidebar variant="inset" collapsible="icon">
       <SidebarHeader >

@@ -25,16 +25,17 @@ export default function PropertyCard({property}:PropertyProps){
                 <div className="flex items-center gap-2"> 
                     <Button asChild>
                         <Link 
-                            to={`/account/${role}/property/${id}`}
-                            //params={{role, id}}
+                            to='/account/$role/property/$id'
+                            params={{role:role ? role : '', id}}
                         >
                             <IconEye />View Property
                         </Link>
                     </Button>
                     <Button asChild>
                         <Link 
-                            to={`/account/$role/add_property?property_id=${id}`}
-                            //search={{property_id:id}}
+                            to='/account/$role/add_property'
+                            params={{role:role ? role : ''}}
+                            search={{property_id:id}}
                         >
                             <IconEdit />
                             Edit Property

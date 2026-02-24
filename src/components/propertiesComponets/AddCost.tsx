@@ -28,14 +28,14 @@ interface CostProps {
 export default function AddCost({initialData}:CostProps){
     const isEditMode = Boolean(initialData)
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null >(null);
     const btntext = isEditMode ? 'Save Changes' : 'Add Cost'
 
     const {id} = useParams({strict:false})
     const form = useForm({
         defaultValues: {
             title:'',
-            cost:null,
+            cost:0,
         },
 
         onSubmit: async({value})=> {
@@ -54,7 +54,7 @@ export default function AddCost({initialData}:CostProps){
 
     const handleAddCost = async(value) => {
         setLoading(true)
-        const url = isEditMode ? `/api/property/cost/${initialData.id}` : `/api/property/cost/${id}`;
+        const url = isEditMode ? `/api/property/cost/${initialData?.id}` : `/api/property/cost/${id}`;
             const method = isEditMode ? 'patch' : 'post';
             const {data,error} = await apiRequest(()=> 
                 axios[method](url, value)

@@ -25,11 +25,13 @@ import { useState } from "react";
 import ListPagination from "../ui/list-pagination";
 import { Link } from "@tanstack/react-router";
 import { Button } from "../ui/button";
+import { useParams } from "@tanstack/react-router";
 
 
 
 
 export default function PropertiesList() {
+    const {role} = useParams({strict:false})
     const [page, setPage] = useState(1);
     const [query, setQuery] = useState('')
     const { data: properties, isLoading } = useQuery({
@@ -86,7 +88,13 @@ export default function PropertiesList() {
                                     </EmptyHeader>
                                     <EmptyContent className="flex-row justify-center gap-2">
                                         <Button asChild>
-                                            <Link to="/account/$role/add_property"><IconPlus /> Add Property</Link>
+                                            <Link 
+                                                to="/account/$role/add_property"
+                                                params={{role:role ? role : ''}}
+                                                search={{property_id:''}}
+                                            >
+                                                <IconPlus /> Add Property
+                                            </Link>
                                         </Button>
                                     </EmptyContent>
                                 </Empty>

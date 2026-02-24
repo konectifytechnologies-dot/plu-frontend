@@ -6,7 +6,6 @@ import { Field, FieldLabel, FieldError } from "../ui/field"
 import { unitSchema } from "@/schemas"
 import { Input } from "../ui/input"
 import axios from "@/lib/axios"
-import type { ItemType } from "./types/PropertyTypes"
 import Submitbtn from "../ui/submitbtn"
 import { Separator } from "../ui/separator"
 import { useParams } from "@tanstack/react-router"
@@ -16,6 +15,7 @@ import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import { toast } from "sonner"
 
+
 interface UnitProps {
     initialData: UnitType | null
 }
@@ -24,7 +24,7 @@ export default function AddUnit({ initialData }: UnitProps) {
     const { id } = useParams({ strict: false });
     const propertyIdIsPresent = Boolean(id);
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null >(null);
     const btn_text = isEditMode ? 'Save Changes' : 'Add Unit';
 
     const { data: properties } = useQuery({
@@ -44,7 +44,7 @@ export default function AddUnit({ initialData }: UnitProps) {
             name: '',
             bedrooms: 0,
             rent: 0,
-            property_id: (propertyIdIsPresent ? id : ''),
+            property_id: id || '',
             property: ''
         },
         validators: {
@@ -60,8 +60,8 @@ export default function AddUnit({ initialData }: UnitProps) {
         if (isEditMode && initialData) {
             form.reset({
                 name: initialData.name,
-                bedrooms: initialData.bedrooms,
-                rent: initialData.rent,
+                bedrooms: initialData.bedrooms || 0,
+                rent: initialData.rent || 0,
                 property_id: initialData.property_id,
                 property: initialData.property
             })
@@ -70,7 +70,7 @@ export default function AddUnit({ initialData }: UnitProps) {
 
     const handleAddUnit = async (value: UnitFormValues) => {
         setLoading(true)
-        const url = isEditMode ? `/api/unit/${initialData.id}` : '/api/unit';
+        const url = isEditMode ? `/api/unit/${initialData?.id}` : '/api/unit';
         const method = isEditMode ? 'patch' : 'post';
         const { data, error } = await apiRequest(() =>
             axios[method](url, value)
@@ -184,7 +184,7 @@ export default function AddUnit({ initialData }: UnitProps) {
                                         items={items}
                                         placeholder="Select Property"
                                         value={field.state.value}
-                                        handleChange={(item: ItemType) => {
+                                        handleChange={(item) => {
                                             field.handleChange(item.name)
                                             form.setFieldValue("property_id", item.id)
                                         }}

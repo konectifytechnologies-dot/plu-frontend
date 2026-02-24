@@ -6,25 +6,15 @@ import { Skeleton } from "./skeleton";
 import { IconChevronCompactDown, IconChevronCompactUp } from "@tabler/icons-react";
 import { Button } from "./button";
 
-type ItemType = {
-    name:string | null,
-    id:string | null
-}
-export type DropdownProps = {
-  handleChange?: (value:ItemType) => void
-  items?: ItemType[],
-  disabled?: boolean
-  value?: string
-  placeholder?: string,
-}
 
 
 
-export default function Dropdown({items=[], value, placeholder="Select",  handleChange}:DropdownProps){
+
+export default function Dropdown({items=[], value, placeholder="Select",  handleChange}:any){
     const [opened, handlers] = useDisclosure(false);
-    const [search, setSearch] = useState<string>('')
+    const [search, setSearch] = useState<any>('')
     const triggerRef = useRef<any>(null);
-    const [triggerWidth, setTriggerWidth] = useState<number>(0);
+    const [triggerWidth, setTriggerWidth] = useState<any>(0);
     
 
      useEffect(() => {

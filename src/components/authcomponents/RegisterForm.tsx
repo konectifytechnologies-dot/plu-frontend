@@ -15,8 +15,6 @@ import {   Field,
 import { Separator } from "../ui/separator";
 import axios from "@/lib/axios";
 import { csrf, getLoggedInUser } from "@/lib/auth";
-import type { LoginInput } from "@/schemas";
-import { loginSchema } from "@/schemas";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";

@@ -1,4 +1,3 @@
-import axios from "axios"
 import { getApiError } from "./api-error"
 
 type SafeResult =

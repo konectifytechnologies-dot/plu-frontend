@@ -1,7 +1,7 @@
 import { getProperty } from '@/queries/fetchQueries'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { Card, CardContent, CardHeader, CardTitle,CardDescription, CardFooter } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle,CardDescription } from '@/components/ui/card'
 import { IconHomeCheck, IconHomeDollar, IconHomeX } from '@tabler/icons-react';
 import Addnew from '@/components/ui/add-new';
 import AddUnit from '@/components/propertiesComponets/AddUnit';
@@ -23,7 +23,7 @@ type PropertyRouteParams = {
 export const Route = createFileRoute('/account/$role/property/$id')({
   pendingComponent:()=> (<div>Loading...</div>),
   loader: ({ params, context } :{params:PropertyRouteParams; context:any}) => {
-    const {role, id } = params
+    const {id } = params
     return context.queryClient.ensureQueryData(
       getProperty(id)
     )

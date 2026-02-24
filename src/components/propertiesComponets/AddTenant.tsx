@@ -4,13 +4,10 @@ import { Field, FieldError, FieldLabel } from "../ui/field"
 import { Input } from "../ui/input"
 import { useStore } from "@tanstack/react-form"
 import axios from "@/lib/axios"
-import type { ItemType } from "./types/PropertyTypes"
 import Dropdown from "../ui/dropdown"
 import { Separator } from "../ui/separator"
 import Submitbtn from "../ui/submitbtn"
-import type { TenantFormValues } from "@/schemas/tenant.schema"
 import { useParams } from "@tanstack/react-router"
-import { useGetProperties } from "@/hooks/useGetProperties"
 import { apiRequest } from "@/lib/apirequest"
 import { toast } from "sonner"
 import { useEffect, useState } from "react"
@@ -18,30 +15,37 @@ import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
+
 interface UnitProps {
     initialData: Tenant | null
 }
 
-interface TenantFormProps {
-    defaultValues: TenantFormValues
-}
 export default function AddTenant({ initialData }: UnitProps) {
     const queryClient = useQueryClient();
     const isEditMode = Boolean(initialData);
     const { id } = useParams({ strict: false });
     const isPropertyIdPresent = Boolean(id);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null)
+    const [error, setError] = useState<string | null >(null)
+
+    const { data: properties } = useQuery({
+        queryKey: ['PROPERTIES'],
+        queryFn: async () => {
+            const { data } = await axios.get(`/api/properties`)
+            return data
+        },
+       
+    });
 
     const form = useForm({
         defaultValues: {
-            name: isEditMode ? initialData.name : '',
-            number: isEditMode ? initialData.number : '',
-            email: isEditMode ? initialData.email : null,
-            property_id: isEditMode ? initialData.property_id : (isPropertyIdPresent ? id : ''),
-            unit_id: isEditMode ? initialData.unit_id : '',
-            house: isEditMode ? initialData.house : '',
-            house_number: isEditMode ? initialData.house_number : '',
+            name: '',
+            number: '',
+            email: '',
+            property_id: id || '',
+            unit_id:  '',
+            house: '',
+            house_number:'',
         },
 
         onSubmit: async ({ value }) => {
@@ -65,8 +69,8 @@ export default function AddTenant({ initialData }: UnitProps) {
             form.reset({
                 name: initialData.name,
                 number: initialData.number,
-                email: initialData.email,
-                property_id: initialData.property_id,
+                email: initialData.email || '',
+                property_id: initialData.property_id || '',
                 unit_id: initialData.unit_id,
                 house: initialData.house,
                 house_number: initialData.house_number
@@ -74,7 +78,7 @@ export default function AddTenant({ initialData }: UnitProps) {
         }
     }, [isEditMode, initialData])
 
-    const { properties, isLoading, isError } = useGetProperties()
+
     const { data: units } = useQuery({
         queryKey: ['PROPERTY_UNITS', { id: property }],
         queryFn: async () => {
@@ -93,7 +97,7 @@ export default function AddTenant({ initialData }: UnitProps) {
     console.log(property);
     const handleAddTenant = async (value) => {
         setLoading(true)
-        const url = isEditMode ? `/api/user/${initialData.user_id}` : '/api/tenant';
+        const url = isEditMode ? `/api/user/${initialData?.user_id}` : '/api/tenant';
 
         const method = isEditMode ? 'patch' : 'post';
         const { data, error } = await apiRequest(() =>
@@ -175,7 +179,6 @@ export default function AddTenant({ initialData }: UnitProps) {
                         <form.Field
                             name="email"
                             children={(field) => {
-                              
                                 return (
                                     <Field className="gap-2">
                                         <FieldLabel htmlFor="first-name">Tenant Email Address<span className="text-red-500">*</span></FieldLabel>
@@ -184,7 +187,7 @@ export default function AddTenant({ initialData }: UnitProps) {
                                             id={field.name}
                                             name={field.name}
                                             value={field.state.value}
-                                            onChange={(e) => field.handleChange(e.target.value as string | null)}
+                                            onChange={(e) => field.handleChange(e.target.value)}
                                             className="bg-white"
                                         />
 
@@ -206,7 +209,7 @@ export default function AddTenant({ initialData }: UnitProps) {
                                         items={propItems}
                                         placeholder="Select Property"
                                         value={field.state.value}
-                                        handleChange={(item: ItemType) => {
+                                        handleChange={(item) => {
                                             field.handleChange(item.name)
                                             form.setFieldValue("property_id", item.id)
                                         }}
@@ -229,7 +232,7 @@ export default function AddTenant({ initialData }: UnitProps) {
                                     items={unitItems}
                                     placeholder="Select Property"
                                     value={field.state.value}
-                                    handleChange={(item: ItemType) => {
+                                    handleChange={(item) => {
                                         field.handleChange(item.name)
                                         form.setFieldValue("unit_id", item.id)
                                     }}

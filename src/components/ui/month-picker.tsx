@@ -16,7 +16,6 @@ type MonthPickerProps = {
 export function MonthPicker({ value, onChange }: MonthPickerProps) {
   const [open, handlers] = useDisclosure(false);
 
-  const selectedMonth = value ? Number(value.split("-")[1]) - 1 : null
 
   function selectMonth(month:string) {
     //const month = String(monthIndex + 1).padStart(2, "0")

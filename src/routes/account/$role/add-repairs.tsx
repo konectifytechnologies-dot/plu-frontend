@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
-import { Field, FieldError, FieldLabel} from '@/components/ui/field'
+import { Field, FieldLabel} from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { useGetProperties } from '@/hooks/useGetProperties'
@@ -44,17 +44,16 @@ function RouteComponent() {
  const [repairItems, setRepairItems] = useState(defaultItems);
  const [repair, setRepair] = useSetState({
   description:'',
-  property_id:null,
+  property_id:'',
   house:'',
-  unit_id:null,
   unit:'',
-  cost:null,
+  unit_id:'',
+  cost:0,
 
  })
 
-  const {properties, isLoading} = useGetProperties()
+  const {properties} = useGetProperties()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null);
   const items = properties && properties.data.map((item)=> {
     return {name:item.name, id:item.id}
   })
@@ -86,16 +85,15 @@ function RouteComponent() {
       )  
       if(error){
         setLoading(false)
-        setError(error)
         console.log(error)
       }
       if(data){
         setLoading(false);
         setRepair({
             description:'',
-            property_id:null,
+            property_id:'',
             house:'',
-            unit_id:null,
+            unit_id:'',
             unit:'',
             cost:0,
         })

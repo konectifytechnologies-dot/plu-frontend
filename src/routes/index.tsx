@@ -21,10 +21,4 @@ export const Route = createFileRoute('/')({
  //component: App,
 })
 
-function App() {
-  return (
-    <section>
-        <h2>welcome</h2>
-    </section>
-  )
-}
+

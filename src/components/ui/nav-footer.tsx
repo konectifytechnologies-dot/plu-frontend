@@ -4,7 +4,6 @@ import { DropdownMenu,
   DropdownMenuItem,
   DropdownMenuTrigger,
  } from "./dropdown-menu";
-import {  Avatar, AvatarFallback } from "./avatar";
 import { useQuery } from "@tanstack/react-query";
 import {LogOut,User,} from "lucide-react";
 import { logOut } from "@/lib/auth";
@@ -20,7 +19,7 @@ export function NavFooter() {
         console.log(data);
         navigate({to:'/login', replace:true}) 
     } 
-    const {data:user, isLoading, isError, error} = useQuery({
+    const {data:user} = useQuery({
         queryKey:['USER_DATA'],
         queryFn: getLoggedInUser
     })

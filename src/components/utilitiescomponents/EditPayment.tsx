@@ -23,7 +23,6 @@ export default function EditPayment({payment}){
     const {properties} = useGetProperties()
     const queryClient = useQueryClient()
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null)
     const form = useForm({
         defaultValues:{
             user_id:payment.user_id,
@@ -51,7 +50,7 @@ export default function EditPayment({payment}){
         (state)=>state.values.property_id
     )
 
-    const {data:tenants, isLoading} = useQuery({
+    const {data:tenants} = useQuery({
         queryKey: ['PROPERTY_TENANTS', {id:property ? property.id : null}],
         queryFn: async()=> {
             const {data} = await axios.get(`/api/property/tenants/${property ? property.id : null}`)
@@ -68,16 +67,14 @@ export default function EditPayment({payment}){
         )  
         if(error){
             setLoading(false)
-            setError(error)
             console.log(error)
         }
         if(data){
             console.log(data);
             setLoading(false);
-            setError(null)
             toast(data.message,{position:'top-center'})
             const query = ['PAYMENTS', {page:1, month:payment.date, year:payment.year, query:null}]
-            queryClient.invalidateQueries(query)
+            queryClient.invalidateQueries({queryKey:query})
             
         } 
     }

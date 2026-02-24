@@ -12,7 +12,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import { IconPlus } from "@tabler/icons-react"
-import type { ReactNode } from 'react'
+
 
 type AddNewProps = {
     label:string,

@@ -16,7 +16,7 @@ type PaginationProps = {
 
 export default function ListPagination({value=1, totalPages, onChange}:PaginationProps){
     //const currentPage = filters.page|| 1;
-    const pages = []
+    const pages:number[] = []
 
     for (let i = 1; i <= totalPages; i++) {
         pages.push(i);

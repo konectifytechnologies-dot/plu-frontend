@@ -1,4 +1,3 @@
-import type { Property } from "./types/PropertyTypes"
 import { FieldGroup, FieldError, FieldLabel, Field } from "../ui/field"
 import { Input } from "../ui/input"
 import { useForm } from "@tanstack/react-form"
@@ -21,23 +20,22 @@ import { toast } from "sonner"
 import { IconCalendar } from "@tabler/icons-react"
 import { useSearch } from "@tanstack/react-router"
 import { Checkbox } from "../ui/checkbox"
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { AlertCircleIcon } from "lucide-react";
 
-interface PropertyProps {
-    initialData: Property | null
-}
-type ItemType = {
-    name: string | null,
-    id: string | null
-}
+
 export default function AddProperty(){
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const {property_id} = useSearch({strict:false});
-  const id  = property_id === undefined || property_id === null ? null : property_id;
+  const [error, setError] = useState<string | null >(null);
+  const selected = useSearch({
+    from: '/account/$role/add_property',
+    select: (search) => search.property_id,
+  })
+  const id  = selected === undefined ? null : selected;
   const btntext = id ? 'Save Changes' : 'Add Property';
 
-    const { data: landlords, isLoading } = useQuery({
+    const { data: landlords } = useQuery({
         queryKey: ['AGENT_LANDLORDS'],
         queryFn: async () => {
             const { data } = await axios.get('/api/landlords');
@@ -77,12 +75,12 @@ export default function AddProperty(){
             picture:'',
             pictureUrl:'',
             name: '',
-            units: null,
+            units: 0,
             location: '',
             landlord_id: '',
             landlord: '',
-            water_cost: null,
-            rent_due_date: null,
+            water_cost: 0,
+            rent_due_date: 0,
             deposit_required: true,
             property_type: 'residential'
         },
@@ -96,7 +94,7 @@ export default function AddProperty(){
     useEffect(() => {
         if (id && property) {
             form.reset({
-                picture: null,
+                picture: '',
                 pictureUrl:property.picture,
                 name: property.name,
                 units: property.units,
@@ -112,12 +110,22 @@ export default function AddProperty(){
     }, [id, property])
 
 
-    console.log(property)
+  
     const handleAddProperty = async(value)=> {
         setLoading(true);
+        const formData = new FormData()
+        for (const key in value) {
+            const field = value[key]
+
+            if (field instanceof File) {
+            formData.append(key, field)
+            } else if (field !== null && field !== undefined) {
+            formData.append(key, String(field))
+            }
+        }
         const url =  id ? `/api/property/${id}` : '/api/property';
         const {data,error} = await apiRequest(()=> 
-            axios.post(url, value)
+            axios.post(url, formData)
         )  
         if(error){
             setLoading(false)
@@ -142,6 +150,13 @@ export default function AddProperty(){
                 }}
 
             >
+                 {error && (
+                    <Alert variant="destructive" className="max-w-md">
+                        <AlertCircleIcon />
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                )}
                 <FieldGroup>
                     <Field>
                         <FieldLabel>Property Picture</FieldLabel>
@@ -152,7 +167,7 @@ export default function AddProperty(){
                                 return(
                                     <>
                                     <ImageSelect 
-                                        value={field.state.value ?? null}
+                                        value={field.state.value}
                                         handleChange={(file)=> form.setFieldValue('picture', file)}
                                         onUpload={(value)=> field.handleChange(value)}
                                     />
@@ -266,19 +281,18 @@ export default function AddProperty(){
                                     <form.Field
                                         name="landlord"
                                         children={(field) => {
-                                            const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
                                             return (
                                                 <>
                                                     <Dropdown
                                                         items={items}
                                                         value={field.state.value}
                                                         placeholder="Select Landlord"
-                                                        handleChange={(item: ItemType) => {
+                                                        handleChange={(item) => {
                                                             field.handleChange(item.name)
                                                             form.setFieldValue("landlord_id", item.id)
                                                         }}
                                                     />
-                                                    {isInvalid && (<FieldError errors={field.state.meta.errors} />)}
+                                                   
                                                 </>
                                             )
                                         }}
