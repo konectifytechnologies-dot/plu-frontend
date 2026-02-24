@@ -13,14 +13,15 @@ import {   Field,
   InputGroupInput,
 } from "@/components/ui/input-group"
 import { Separator } from "../ui/separator";
-import axios from "@/lib/axios";
-import { csrf, getLoggedInUser } from "@/lib/auth";
+
+import { csrf } from "@/lib/auth";
 import type { LoginInput } from "@/schemas";
 import { loginSchema } from "@/schemas";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import Submitbtn from "../ui/submitbtn";
+import axios from "@/lib/axios";
 
  
 
@@ -35,15 +36,15 @@ export default function LoginForm(){
         try{
             setLoading(true)
             await csrf();
-            await axios.post('/api/login', values);
-            const user = await getLoggedInUser();
+            await axios.post('/api/login', values)
+            /*const user = await getLoggedInUser();
             if(user){
                 navigate({
                     to:'/account/$role/home',
                     params:{role:user.role},
                     replace:true
                 })
-            }
+            }*/
         }catch (error: any) {
             if (error.response?.status === 422) {
                setError('Incorrect Password or Email, Please check and try again') 
