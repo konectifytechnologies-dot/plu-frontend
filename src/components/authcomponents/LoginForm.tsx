@@ -22,6 +22,7 @@ import { AlertCircleIcon } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import Submitbtn from "../ui/submitbtn";
 import axios from "@/lib/axios";
+import { getLoggedInUser } from "@/lib/auth";
 
  
 
@@ -37,14 +38,14 @@ export default function LoginForm(){
             setLoading(true)
             await csrf();
             await axios.post('/api/login', values)
-            /*const user = await getLoggedInUser();
+            const user = await getLoggedInUser();
             if(user){
                 navigate({
                     to:'/account/$role/home',
                     params:{role:user.role},
                     replace:true
                 })
-            }*/
+            }
         }catch (error: any) {
             if (error.response?.status === 422) {
                setError('Incorrect Password or Email, Please check and try again') 
