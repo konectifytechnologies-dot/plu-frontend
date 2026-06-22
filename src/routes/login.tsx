@@ -2,7 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import LoginForm from '@/components/authcomponents/LoginForm'
 import { redirect } from '@tanstack/react-router'
 import { getLoggedInUser } from '@/lib/auth'
-
+import { Link } from '@tanstack/react-router'
+import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async()=> {
@@ -36,6 +37,7 @@ function RouteComponent() {
                     <LoginForm />
                   </div>
             </div>
+            <Button variant="outline" className='w-full' asChild><Link to="/register" >Create Account</Link></Button>
         </div>
       </div>
     </>
