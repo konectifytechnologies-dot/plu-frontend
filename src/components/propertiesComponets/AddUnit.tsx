@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form"
 import type { Property, UnitFormValues, UnitType } from "./types/PropertyTypes"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import Dropdown from "../ui/dropdown"
 import { Field, FieldLabel, FieldError } from "../ui/field"
 import { unitSchema } from "@/schemas"
@@ -21,6 +21,7 @@ interface UnitProps {
 }
 export default function AddUnit({ initialData }: UnitProps) {
     const isEditMode = Boolean(initialData)
+    const queryClient = useQueryClient()
     const { id } = useParams({ strict: false });
     const propertyIdIsPresent = Boolean(id);
     const [loading, setLoading] = useState(false)
@@ -84,6 +85,7 @@ export default function AddUnit({ initialData }: UnitProps) {
         if (data) {
             setLoading(false);
             !isEditMode && form.reset()
+            queryClient.invalidateQueries({queryKey:['USER_STATS_DATA']})
             toast(data.message, { position: 'top-center' })
         }
 

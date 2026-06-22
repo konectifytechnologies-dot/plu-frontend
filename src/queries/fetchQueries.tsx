@@ -38,6 +38,20 @@ export const getProperty = (id: string) =>
     },
 })
 
+export const getInvoice = (id: string) =>
+  queryOptions({
+    queryKey: ['INVOICE', id],
+    queryFn: async () => {
+      const response = await axios.get(`/api/invoice/${id}`)
+
+      if (response.status === 200) {
+        return response.data
+      }
+
+      throw new Error(response.data?.error ?? 'Failed to fetch property')
+    },
+})
+
 export const getLandlords = () =>
   queryOptions({
     queryKey: ['AGENT_LANDLORDS'],

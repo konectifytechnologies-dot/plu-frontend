@@ -22,7 +22,7 @@ import { AlertCircleIcon } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import Submitbtn from "../ui/submitbtn";
 import axios from "@/lib/axios";
-import { getLoggedInUser } from "@/lib/auth";
+import { getLoggedInUser } from "@/lib/auth"; 
 
  
 
@@ -35,6 +35,7 @@ export default function LoginForm(){
 
     const handleLogin = async(values:LoginInput)=> {
         try{
+            console.log(values);
             setLoading(true)
             await csrf();
             await axios.post('/api/login', values)
@@ -48,6 +49,7 @@ export default function LoginForm(){
             }
         }catch (error: any) {
             if (error.response?.status === 422) {
+                setLoading(false);
                setError('Incorrect Password or Email, Please check and try again') 
             }
         }
@@ -63,7 +65,7 @@ export default function LoginForm(){
         },
         onSubmit:async({value})=> {
             await handleLogin(value)
-        }
+        } 
     })
 
     

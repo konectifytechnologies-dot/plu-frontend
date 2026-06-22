@@ -115,6 +115,7 @@ export default function AddTenant({ initialData }: UnitProps) {
             !isEditMode && form.reset()
             toast(data.message, { position: 'top-center' })
             const query = id ? ['PROPERTY_TENANTS', { id }] : ['USER_TENANTS', { page: 1, query: '' }]
+            queryClient.invalidateQueries({queryKey:['USER_STATS_DATA']})
             queryClient.invalidateQueries({queryKey:query})
 
         }

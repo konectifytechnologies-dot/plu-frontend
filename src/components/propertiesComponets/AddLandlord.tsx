@@ -11,6 +11,7 @@ import type { LandlordFormValues, LandlordType } from "./types/PropertyTypes";
 import axios from "@/lib/axios";
 import { apiRequest } from "@/lib/apirequest";
 import { toast } from "sonner";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 interface AddLandLordProps {
@@ -20,6 +21,7 @@ interface AddLandLordProps {
 
 export default function AddLandlord({ initialData }: AddLandLordProps) {
     const isEditMode = Boolean(initialData);
+    const queryClient = useQueryClient()
     const [error, setError] = useState<string | null >(null);
     const [loading, setLoading] = useState(false);
 
@@ -54,6 +56,7 @@ export default function AddLandlord({ initialData }: AddLandLordProps) {
                 setLoading(false);
                 toast(data.message,{position:'top-center'})
                 form.reset()
+                queryClient.invalidateQueries({queryKey:['USER_STATS_DATA']})
                 console.log(data);
             }            
     }

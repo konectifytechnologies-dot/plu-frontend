@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 export default axios.create({
-    baseURL:'https://api.pludevelopers.co.ke',
+    baseURL:'https://developers.disqav.com',
     timeout:60000,
     withCredentials:true,
     withXSRFToken:true,
@@ -14,5 +14,5 @@ export default axios.create({
     
 });
 axios.interceptors.response.use(null, (err)=> {
-    console.log(err)
+    console.log(err) 
 })

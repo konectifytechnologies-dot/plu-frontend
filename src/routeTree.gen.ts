@@ -13,6 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InvoiceIdRouteImport } from './routes/invoice/$id'
 import { Route as AccountRoleRouteImport } from './routes/account/$role'
 import { Route as AccountRoleUtilitiesRouteImport } from './routes/account/$role/utilities'
 import { Route as AccountRoleTenantsRouteImport } from './routes/account/$role/tenants'
@@ -44,6 +45,11 @@ const AccountRoute = AccountRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvoiceIdRoute = InvoiceIdRouteImport.update({
+  id: '/invoice/$id',
+  path: '/invoice/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountRoleRoute = AccountRoleRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/account/$role': typeof AccountRoleRouteWithChildren
+  '/invoice/$id': typeof InvoiceIdRoute
   '/account/$role/add-payment': typeof AccountRoleAddPaymentRoute
   '/account/$role/add-repairs': typeof AccountRoleAddRepairsRoute
   '/account/$role/add_property': typeof AccountRoleAdd_propertyRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/account/$role': typeof AccountRoleRouteWithChildren
+  '/invoice/$id': typeof InvoiceIdRoute
   '/account/$role/add-payment': typeof AccountRoleAddPaymentRoute
   '/account/$role/add-repairs': typeof AccountRoleAddRepairsRoute
   '/account/$role/add_property': typeof AccountRoleAdd_propertyRoute
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/account/$role': typeof AccountRoleRouteWithChildren
+  '/invoice/$id': typeof InvoiceIdRoute
   '/account/$role/add-payment': typeof AccountRoleAddPaymentRoute
   '/account/$role/add-repairs': typeof AccountRoleAddRepairsRoute
   '/account/$role/add_property': typeof AccountRoleAdd_propertyRoute
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/account/$role'
+    | '/invoice/$id'
     | '/account/$role/add-payment'
     | '/account/$role/add-repairs'
     | '/account/$role/add_property'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/account/$role'
+    | '/invoice/$id'
     | '/account/$role/add-payment'
     | '/account/$role/add-repairs'
     | '/account/$role/add_property'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/account/$role'
+    | '/invoice/$id'
     | '/account/$role/add-payment'
     | '/account/$role/add-repairs'
     | '/account/$role/add_property'
@@ -224,6 +236,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  InvoiceIdRoute: typeof InvoiceIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -254,6 +267,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invoice/$id': {
+      id: '/invoice/$id'
+      path: '/invoice/$id'
+      fullPath: '/invoice/$id'
+      preLoaderRoute: typeof InvoiceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account/$role': {
@@ -391,6 +411,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  InvoiceIdRoute: InvoiceIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
