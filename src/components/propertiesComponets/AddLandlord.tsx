@@ -11,7 +11,7 @@ import type { LandlordFormValues, LandlordType } from "./types/PropertyTypes";
 import axios from "@/lib/axios";
 import { apiRequest } from "@/lib/apirequest";
 import { toast } from "sonner";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {useQueryClient } from "@tanstack/react-query";
 
 
 interface AddLandLordProps {
