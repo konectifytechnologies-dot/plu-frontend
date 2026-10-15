@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 export default axios.create({
-    baseURL:'https://developers.disqav.com',
+    baseURL:'https://api.pludevelopers.co.ke',
     timeout:60000,
     withCredentials:true,
     withXSRFToken:true,
